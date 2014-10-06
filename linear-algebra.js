@@ -16,8 +16,6 @@ mat4.identity = function() {
             if (i==0 || i%5==0)
             {
                 identityMatrix[i] = 1.0;
-            } else {
-                identityMatrix[i] = 0;
             }
         }
 
@@ -43,8 +41,6 @@ mat3.identity = function() {
             if (i==0 || i%4==0)
             {
                 identityMatrix[i] = 1.0;
-            } else {
-                identityMatrix[i] = 0;
             }
         }
 
@@ -159,7 +155,7 @@ vec3.prototype = {
     },
     
     magnitude : function () {
-        return Math.sqrt(this.x*this.x + this.y+this.y * this.z*this.z);
+        return Math.sqrt(this.x*this.x + this.y*this.y + this.z*this.z);
     },
     
     getUnitVector : function () {
@@ -169,7 +165,7 @@ vec3.prototype = {
         unitVec.x /= mag;
         unitVec.y /= mag;
         unitVec.z /= mag;
-        return unitVec;
+        return unitV
     },
     
     add : function (otherVec) {
