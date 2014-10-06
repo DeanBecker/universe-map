@@ -78,8 +78,8 @@ function loadFile (file, callback, isJson) {
 	req.open('GET', file, true);
 }
 
-// Test function
 function bufferQuad () {
+    // Test function
 	var vertexPosBuffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, vertexPosBuffer);
 	var vertices = [-0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5];

@@ -52,16 +52,22 @@ mat3.identity = function() {
 		return m;
 }
 
+mat3.getDualMatrix = function (vector)
+{
+    var dualMat = new mat3();
+    dualMat.set(0, -vector.z, vector.y,
+               vector.z, 0, -vector.x,
+               -vector.y, vector.x, 0);
+    return dualMat;
+}
+
 mat3.getRotationMatrix = function (theta, vector) {
         var aaT = new mat3();
         aaT.set(vector.x*vector.x, vector.x*vector.y, vector.x*vector.z,
                 vector.x*vector.y, vector.y*vector.y, vector.y*vector.z,
                vector.x*vector.z, vector.y*vector.z, vector.z*vector.z);
         
-        var dualMat = new mat3();
-        dualMat.set(0, -vector.z, vector.y,
-                   vector.z, 0, -vector.x,
-                   -vector.y, vector.x, 0);
+        var dualMat = mat3.getDualMatrix(vector);
         
         var cosT = Math.cos(theta);
         var sinT = Math.sin(theta);
@@ -141,6 +147,58 @@ function vec3 ()
     this.x = 0;
     this.y = 0;
     this.z = 0;
+}
+
+vec3.prototype = {
+    copy : function () {
+        var newVec = new vec3();
+        newVec.x = this.x;
+        newVec.y = this.y;
+        newVec.z = this.z;
+        return newVec;
+    },
+    
+    magnitude : function () {
+        return Math.sqrt(this.x*this.x + this.y+this.y * this.z*this.z);
+    },
+    
+    getUnitVector : function () {
+        // Unit Vector
+        var unitVec = this.copy();
+        var mag = unitVec.magnitude();
+        unitVec.x /= mag;
+        unitVec.y /= mag;
+        unitVec.z /= mag;
+        return unitVec;
+    },
+    
+    add : function (otherVec) {
+        this.x += otherVec.x;
+        this.y += otherVec.y;
+        this.z += otherVec.z;
+        return this;
+    },
+    
+    dot : function (otherVec) {
+        return (this.x*otherVec.x) + (this.y*otherVec.y);        
+    },
+    
+    getTheta : function (otherVec) {
+        return Math.acos(this.dot(otherVec) / (this.magnitude() * otherVec.magnitude()));
+    },
+    
+    getProjection : function (otherVec) {
+        var projectedVector = this.copy();        
+        var aMag = projectedVector.magnitude();
+        return projectedVector.multiply((projectedVector.dot(otherVec) / (aMag*aMag)));
+    },
+    
+    cross : function (otherVec) {
+        this.x = (this.y*otherVec.z) - (otherVec.y*this.z);
+        this.y = (this.z*otherVec.x) - (otherVec.z*this.x);
+        this.z = (this.x*otherVec.y) - (otherVec.x*this.y);
+        return this;
+    }
 }
 
 function vec4 ()
