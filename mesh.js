@@ -1,4 +1,7 @@
-function mesh(str) {
+function mesh(str, model, view, projection) {
+    this.modelMatrix = model;
+    this.viewMatrix = view;
+    this.projectionMatrix = projection;
 	this.meshResource = str;
 	this.initialised = false;
 	this.programs = [];
@@ -9,7 +12,6 @@ function mesh(str) {
 		obj.materials = meshData.materials;
 		obj.indices = meshData.indices;
 		obj.vertices = meshData.vertices;
-
 		obj.vertexPosBuffer = gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexPosBuffer);
 		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(obj.vertices), gl.STATIC_DRAW);
@@ -22,6 +24,9 @@ function mesh(str) {
 			var material = obj.materials[m];
 			var program = createProgram(material.vertex, material.fragment, function(p) {
 				p.vertexPosAttrib = gl.getAttribLocation(p, 'vertPos');
+                p.modelMatrix = gl.getUniformLocation(p, 'modelMat');
+                p.viewMatrix = gl.getUniformLocation(p, 'viewMat');
+                p.projectionMatrix = gl.getUniformLocation(p, 'projMat');
 				obj.draw(); // draw object after full initialisation
 			});
 			program.numIndices = material.numIndices;
@@ -40,7 +45,13 @@ function mesh(str) {
 			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, obj.indexBuffer);
 			gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexPosBuffer);
 			gl.vertexAttribPointer(program.vertexPosAttrib, 3, gl.FLOAT, false, 0, 0);
-
+            
+            if (p.modelMatrix && p.viewMatrix && p.projectionMatrix) {
+                gl.uniformMatrix4fv(model, gl.FALSE, p.modelMatrix);
+                gl.uniformMatrix4fv(view, gl.FALSE, p.viewMatrix);
+                gl.uniformMatrix4fv(projection, gl.FALSE, p.projectionMatrix);
+            }
+            
 			gl.drawElements(gl.TRIANGLES, program.numIndices, gl.UNSIGNED_SHORT, start);	
 			start += program.numIndices;
 		}

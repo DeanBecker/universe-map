@@ -9,7 +9,7 @@ function mat4()
 }
 
 mat4.identity = function() {
-		var identityMatrix = new Float32Array(15);
+		var identityMatrix = new Float32Array(16);
 
         for (var i = 0; i < identityMatrix.length; i++)
         {
@@ -22,6 +22,110 @@ mat4.identity = function() {
 		return identityMatrix;
 }
 
+mat4.getTranslationMatrix = function (vec) {
+    var mat = new mat4();
+    
+    mat.set(1.0, 0.0, 0.0, vec.x,
+           0.0, 1.0, 0.0, vec.y,
+           0.0, 0.0, 1.0, vec.z,
+           0.0, 0.0, 0.0, 1.0);
+    
+    return mat;
+}
+
+mat4.getScaleMatrix = function (vec) {
+    var mat = new mat4();
+    
+    mat.set(vec.x, 0.0, 0.0, 0.0,
+           0.0, vec.y, 0.0, 0.0,
+           0.0, 0.0, vec.z, 0.0,
+           0.0, 0.0, 0.0, 1.0);
+    
+    return mat;
+}
+
+mat4.getRotationMatrix = function (theta, vector) {
+    var rotMat3 = mat3.getRotationMatrix(theta, vector);
+    var mat = new mat4();
+    
+    mat.set(rotMat3.data[0], rotMat3.data[1], rotMat3.data[2], 0.0,
+            rotMat3.data[3], rotMat3.data[4], rotMat3.data[5], 0.0,
+           rotMat3.data[6], rotMat3.data[7], rotMat3.data[8], 0.0,
+           0.0, 0.0, 0.0, 1.0);
+    
+    return mat;
+}
+
+mat4.getViewMatrix  = function (eye, up, centre) {
+    var a = eye.copy().subtract(centre);
+    var w = a.copy().scalarDiv(a.magnitude());
+    var u = up.copy().cross(w);
+    u = u.scalarDiv(u.magnitude());
+    var v = w.copy().cross(u);
+    
+    var mat = new mat4();
+    mat.set(u.x, u.y, u.z, ((-u.x*eye.x)*(-u.y*eye.y)*(-u.z*eye.z)),
+            v.x, v.y, v.z, ((-v.x*eye.x)*(-v.y*eye.y)*(-v.z*eye.z)),
+            w.x, w.y, w.z, ((-w.x*eye.x)*(-w.y*eye.y)*(-w.z*eye.z)),
+            0, 0, 0, 1.0);
+    return mat;
+}
+
+mat4.getProjectionMatrix = function (fovy, aspect, zNear, zFar) {
+    var theta = fovy/2.0;
+    var d = 1.0 / Math.tan(theta);
+    var A = -((zFar+zNear)/(zFar-zNear));
+    var B = -((2*zFar*zNear)/(zFar-zNear));
+    
+    var mat = new mat4();    
+    mat.set(d/aspect, 0, 0, 0,
+           0, d, 0, 0,
+           0, 0, A, B,
+           0, 0, -1, 0);
+    return mat;
+}
+
+mat4.prototype = {
+    set : function (x0, x1, x2, x3,
+                    x4, x5, x6, x7,
+                    x8, x9, x10, x11,
+                    x12, x13, x14, x15) {
+        this.data[0] = x0;
+        this.data[1] = x1;
+        this.data[2] = x2;
+        this.data[3] = x3;
+        this.data[4] = x4;
+        this.data[5] = x5;
+        this.data[6] = x6;
+        this.data[7] = x7;
+        this.data[8] = x8;
+        this.data[9] = x9;
+        this.data[10] = x10;
+        this.data[11] = x11
+        this.data[12] = x12;
+        this.data[13] = x13;
+        this.data[14] = x14;
+        this.data[15] = x15;
+        return this;
+    },
+    
+    copy : function () {
+        var newMat = new mat4();
+        for (var i = 0; i < 16; ++i)
+        {
+            newMat.data[i] = this.data[i];
+        }
+        return newMat;
+    },
+    
+    multiply4m : function (_mat4) {
+        // TODO
+    },
+    
+    multiply4v : function (_vec4) {
+        // TODO
+    }
+}
 
 /*
  * 3x3 Matrix
@@ -119,6 +223,13 @@ mat3.prototype = {
         }
     },
     
+    subtract : function (matrix) {
+        for (var i = 0; i < this.data.length; ++i)
+        {
+            this.data[i] -= matrix.data[i];
+        }
+    },
+    
     product : function (matrix) {
         this.set(
             this.data[0]*matrix.data[0]+this.data[1]*matrix.data[3]+this.data[2]*this.data[6],
@@ -168,10 +279,24 @@ vec3.prototype = {
         return unitV
     },
     
+    scalarDiv : function (scalar) {
+        this.x /= scalar;
+        this.y /= scalar;
+        this.z /= scalar;
+        return this;
+    },
+    
     add : function (otherVec) {
         this.x += otherVec.x;
         this.y += otherVec.y;
         this.z += otherVec.z;
+        return this;
+    },
+    
+    subtract : function (otherVec) {
+        this.x -= otherVec.x;
+        this.y -= otherVec.y;
+        this.z -= otherVec.z;
         return this;
     },
     
@@ -197,10 +322,43 @@ vec3.prototype = {
     }
 }
 
-function vec4 ()
+function vec4 (_vec3)
 {
-    this.x = 0;
-    this.y = 0;
-    this.z = 0;
-    this.w = 0;
+    if (_vec3)
+    {
+        this.x = _vec3.x;
+        this.y = _vec3.y;
+        this.z = _vec3.z;
+        this.w = 1.0;
+    } else {
+        this.x = 0;
+        this.y = 0;
+        this.z = 0;
+        this.w = 0;
+    }
+}
+
+vec4.prototype = {
+    copy : function () {
+        var newVec = new vec4();
+        newVec.x = this.x;
+        newVec.y = this.y;
+        newVec.z = this.z;
+        newVec.w = this.w;
+        return newVec;
+    },
+    
+    getCartesianVector : function () {
+        var vec = new vec3();
+        if (this.w == 0)
+        {
+            vec.x = this.x;
+            vec.y = this.y;
+            vec.z = this.z;
+        } else {
+            vec.x = this.x / this.w;
+            vec.y = this.y / this.w;
+            vec.z = this.z / this.w;
+        }
+    }
 }
