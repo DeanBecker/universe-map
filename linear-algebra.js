@@ -9,17 +9,19 @@ function mat4()
 }
 
 mat4.identity = function() {
-		var identityMatrix = new Float32Array(16);
+    var identityMatrix = new Float32Array(16);
 
-        for (var i = 0; i < identityMatrix.length; i++)
+    for (var i = 0; i < identityMatrix.length; i++)
+    {
+        if (i==0 || i%5==0)
         {
-            if (i==0 || i%5==0)
-            {
-                identityMatrix[i] = 1.0;
-            }
+            identityMatrix[i] = 1.0;
         }
-
-		return identityMatrix;
+    }
+    
+    var newMat = new mat4();
+    newMat.data = identityMatrix;
+    return newMat;
 }
 
 mat4.getTranslationMatrix = function (vec) {
@@ -119,11 +121,64 @@ mat4.prototype = {
     },
     
     multiply4m : function (_mat4) {
-        // TODO
+        /* this                    _mat4
+         * [a1   a2   a3   a4]     [b1   b2   b3   b4]
+         * [a5   a6   a7   a8]     [b5   b6   b7   b8]
+         * [a9  a10  a11  a12]  x  [b9  b10  b11  b12]
+         * [a13 a14  a15  a16]     [b13 b14  b15  b16]
+         *
+         * [a1*b1+a2*b5+a3*b9+a4*b13, a1*b2+a2*b6+a3*b10+a4*b14, ...]
+         * [a5*b1+a6*b5+a7*b9+a8*b13, a5*b2+a6*b6+a7*b10+a8*b14, ...]
+         * [...]
+         * [...]
+         */
+        var newMat = new mat4();
+        for (var i = 0; i < 16; ++i) 
+        {
+            var j = ~~(i/4)*4, h = i-j;
+            for (var k = j, l = 0; k < j+4; ++k, ++l)
+            {
+                newMat.data[i] += this.data[k]*_mat4.data[h+l*4];
+            }
+        }
+        this.data = newMat.data;
+        return this;
     },
     
     multiply4v : function (_vec4) {
         // TODO
+    },
+    
+    multiply : function (scalar) {
+        for (var i = 0; i < this.data.length; ++i)
+        {
+            this.data[i] *= scalar;
+        }
+        return this;
+    },
+    
+    scalarAdd : function (scalar) {
+        for (var i = 0; i < this.data.length; ++i)
+        {
+            this.data[i] += scalar;
+        }
+        return this;
+    },
+    
+    add : function (matrix) {
+        for (var i = 0; i < this.data.length; ++i)
+        {
+            this.data[i] += matrix.data[i];
+        }
+        return this;
+    },
+    
+    subtract : function (matrix) {
+        for (var i = 0; i < this.data.length; ++i)
+        {
+            this.data[i] -= matrix.data[i];
+        }
+        return this;
     }
 }
 
@@ -200,6 +255,7 @@ mat3.prototype = {
         this.data[6] = x6;
         this.data[7] = x7;
         this.data[8] = x8;
+        return this;
     },
     
     multiply : function (scalar) {
@@ -207,6 +263,7 @@ mat3.prototype = {
         {
             this.data[i] *= scalar;
         }
+        return this;
     },
     
     scalarAdd : function (scalar) {
@@ -214,6 +271,7 @@ mat3.prototype = {
         {
             this.data[i] += scalar;
         }
+        return this;
     },
     
     add : function (matrix) {
@@ -221,6 +279,7 @@ mat3.prototype = {
         {
             this.data[i] += matrix.data[i];
         }
+        return this;
     },
     
     subtract : function (matrix) {
@@ -228,6 +287,7 @@ mat3.prototype = {
         {
             this.data[i] -= matrix.data[i];
         }
+        return this;
     },
     
     product : function (matrix) {
