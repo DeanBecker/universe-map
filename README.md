@@ -1,5 +1,5 @@
-# PL Universe Map #
+# Universe Map #
 
 ### What is this repository for? ###
 
-WebGL powered map of the EVE universe.
+WebGL powered map of the (arbitrary) universe.
