@@ -1,5 +1,9 @@
-# PL Universe Map #
+# Universe Map #
 
 ### What is this repository for? ###
 
-WebGL powered map of the EVE universe.
+WebGL powered map of the (arbitrary) universe.
+
+Will be used to visualise star maps, showing constellations.
+
+Mostly used as a toy project for WebGL.
