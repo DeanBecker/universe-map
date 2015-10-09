@@ -49,6 +49,7 @@ function createProgram (vertexShaderPath, fragmentShaderPath, callback) {
 		gl.linkProgram(program);
 
 		if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+            console.log(gl.getProgramInfoLog(program));
 			throw gl.getProgramInfoLog(program);
 		}
 

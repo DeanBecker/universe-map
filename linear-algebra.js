@@ -67,14 +67,15 @@ mat4.getViewMatrix  = function (eye, up, centre) {
     
     var mat = new mat4();
     mat.set(u.x, u.y, u.z, ((-u.x*eye.x)*(-u.y*eye.y)*(-u.z*eye.z)),
-            v.x, v.y, v.z, ((-v.x*eye.x)*(-v.y*eye.y)*(-v.z*eye.z)),
-            w.x, w.y, w.z, ((-w.x*eye.x)*(-w.y*eye.y)*(-w.z*eye.z)),
-            0, 0, 0, 1.0);
+        v.x, v.y, v.z, ((-v.x*eye.x)*(-v.y*eye.y)*(-v.z*eye.z)),
+        w.x, w.y, w.z, ((-w.x*eye.x)*(-w.y*eye.y)*(-w.z*eye.z)),
+        0, 0, 0, 1.0);
     return mat;
 }
 
 mat4.getProjectionMatrix = function (fovy, aspect, zNear, zFar) {
-    var theta = fovy/2.0;
+    var fovyRadians = fovy*(Math.PI/180);
+    var theta = fovyRadians/2.0;
     var d = 1.0 / Math.tan(theta);
     var A = -((zFar+zNear)/(zFar-zNear));
     var B = -((2*zFar*zNear)/(zFar-zNear));
@@ -317,6 +318,13 @@ function vec3 ()
 }
 
 vec3.prototype = {
+    set : function(x, y, z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        return this;
+    },
+    
     copy : function () {
         var newVec = new vec3();
         newVec.x = this.x;
@@ -420,5 +428,6 @@ vec4.prototype = {
             vec.y = this.y / this.w;
             vec.z = this.z / this.w;
         }
+        return vec;
     }
 }

@@ -46,10 +46,10 @@ function mesh(str, model, view, projection) {
 			gl.bindBuffer(gl.ARRAY_BUFFER, obj.vertexPosBuffer);
 			gl.vertexAttribPointer(program.vertexPosAttrib, 3, gl.FLOAT, false, 0, 0);
             
-            if (p.modelMatrix && p.viewMatrix && p.projectionMatrix) {
-                gl.uniformMatrix4fv(model, gl.FALSE, p.modelMatrix);
-                gl.uniformMatrix4fv(view, gl.FALSE, p.viewMatrix);
-                gl.uniformMatrix4fv(projection, gl.FALSE, p.projectionMatrix);
+            if (program.modelMatrix && program.viewMatrix && program.projectionMatrix) {
+                gl.uniformMatrix4fv(program.modelMatrix, gl.FALSE, this.modelMatrix.data);
+                gl.uniformMatrix4fv(program.viewMatrix, gl.FALSE, this.viewMatrix.data);
+                gl.uniformMatrix4fv(program.projectionMatrix, gl.FALSE, this.projectionMatrix.data);
             }
             
 			gl.drawElements(gl.TRIANGLES, program.numIndices, gl.UNSIGNED_SHORT, start);	
