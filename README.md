@@ -5,3 +5,5 @@
 WebGL powered map of the (arbitrary) universe.
 
 Will be used to visualise star maps, showing constellations.
+
+Mostly used as a toy project for WebGL.
