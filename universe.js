@@ -1,12 +1,12 @@
 var canvas = document.getElementById('universe-map');
 var width = canvas.width;
 var height = canvas.height;
-var gl = createContext(canvas);
+var universe = createContext(canvas);
 
-gl.clearColor(1.0, 1.0, 1.0, 1.0);
-gl.clear(gl.COLOR_BUFFER_BIT);
-gl.frontFace(gl.CCW);
-gl.disable(gl.CULL_FACE);
+universe.clearColor(1.0, 1.0, 1.0, 1.0);
+universe.clear(universe.COLOR_BUFFER_BIT);
+universe.frontFace(universe.CCW);
+universe.disable(universe.CULL_FACE);
 
 var eye = new vec3();
 eye.set(0, 0, -1.0);
