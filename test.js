@@ -28,8 +28,8 @@ var myView = testView(eye, centre, up);
 var threeView = new THREE.Matrix4();
 threeView.lookAt(eye, centre, up);
 
-console.log(myView);
-console.log(threeView);
+// console.log(myView);
+// console.log(threeView);
 
 function testPersp(fov, aspect, zNear, zFar) {
     var fovRadians = fov*(Math.PI/180);
@@ -52,5 +52,5 @@ var myPersp = testPersp(75, 800/600, 1, 1000);
 var threePersp = new THREE.Matrix4();
 threePersp.makePerspective(75, 800/600, 1, 1000);
 
-console.log(myPersp);
-console.log(threePersp);
+// console.log(myPersp);
+// console.log(threePersp);
