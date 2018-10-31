@@ -1,9 +1,8 @@
 /*
  * 4x4 Matrix
  */
-function mat4()
-{
-	this.data = new Float32Array(16);
+function mat4() {
+    this.data = new Float32Array(16);
     this.columns = 4;
     this.rows = 4;
 }
@@ -11,10 +10,8 @@ function mat4()
 mat4.identity = function() {
     var identityMatrix = new Float32Array(16);
 
-    for (var i = 0; i < identityMatrix.length; i++)
-    {
-        if (i==0 || i%5==0)
-        {
+    for (var i = 0; i < identityMatrix.length; i++) {
+        if (i==0 || i%5==0) {
             identityMatrix[i] = 1.0;
         }
     }
@@ -30,7 +27,8 @@ mat4.getTranslationMatrix = function (vec) {
     mat.set(1.0, 0.0, 0.0, vec.x,
            0.0, 1.0, 0.0, vec.y,
            0.0, 0.0, 1.0, vec.z,
-           0.0, 0.0, 0.0, 1.0);
+           0.0, 0.0, 0.0, 1.0
+    );
     
     return mat;
 }
@@ -41,7 +39,8 @@ mat4.getScaleMatrix = function (vec) {
     mat.set(vec.x, 0.0, 0.0, 0.0,
            0.0, vec.y, 0.0, 0.0,
            0.0, 0.0, vec.z, 0.0,
-           0.0, 0.0, 0.0, 1.0);
+           0.0, 0.0, 0.0, 1.0
+    );
     
     return mat;
 }
@@ -52,8 +51,9 @@ mat4.getRotationMatrix = function (theta, vector) {
     
     mat.set(rotMat3.data[0], rotMat3.data[1], rotMat3.data[2], 0.0,
             rotMat3.data[3], rotMat3.data[4], rotMat3.data[5], 0.0,
-           rotMat3.data[6], rotMat3.data[7], rotMat3.data[8], 0.0,
-           0.0, 0.0, 0.0, 1.0);
+            rotMat3.data[6], rotMat3.data[7], rotMat3.data[8], 0.0,
+            0.0, 0.0, 0.0, 1.0
+    );
     
     return mat;
 }
@@ -69,7 +69,8 @@ mat4.getViewMatrix  = function (eye, up, centre) {
     mat.set(u.x, u.y, u.z, ((-u.x*eye.x)*(-u.y*eye.y)*(-u.z*eye.z)),
         v.x, v.y, v.z, ((-v.x*eye.x)*(-v.y*eye.y)*(-v.z*eye.z)),
         w.x, w.y, w.z, ((-w.x*eye.x)*(-w.y*eye.y)*(-w.z*eye.z)),
-        0, 0, 0, 1.0);
+        0, 0, 0, 1.0
+    );
     return mat;
 }
 
@@ -82,9 +83,10 @@ mat4.getProjectionMatrix = function (fovy, aspect, zNear, zFar) {
     
     var mat = new mat4();    
     mat.set(d/aspect, 0, 0, 0,
-           0, d, 0, 0,
-           0, 0, A, B,
-           0, 0, -1, 0);
+            0, d, 0, 0,
+            0, 0, A, B,
+            0, 0, -1, 0
+    );
     return mat;
 }
 
@@ -114,8 +116,7 @@ mat4.prototype = {
     
     copy : function () {
         var newMat = new mat4();
-        for (var i = 0; i < 16; ++i)
-        {
+        for (var i = 0; i < 16; ++i) {
             newMat.data[i] = this.data[i];
         }
         return newMat;
@@ -134,11 +135,9 @@ mat4.prototype = {
          * [...]
          */
         var newMat = new mat4();
-        for (var i = 0; i < 16; ++i) 
-        {
+        for (var i = 0; i < 16; ++i) {
             var j = ~~(i/4)*4, h = i-j;
-            for (var k = j, l = 0; k < j+4; ++k, ++l)
-            {
+            for (var k = j, l = 0; k < j+4; ++k, ++l) {
                 newMat.data[i] += this.data[k]*_mat4.data[h+l*4];
             }
         }
@@ -151,32 +150,28 @@ mat4.prototype = {
     },
     
     multiply : function (scalar) {
-        for (var i = 0; i < this.data.length; ++i)
-        {
+        for (var i = 0; i < this.data.length; ++i) {
             this.data[i] *= scalar;
         }
         return this;
     },
     
     scalarAdd : function (scalar) {
-        for (var i = 0; i < this.data.length; ++i)
-        {
+        for (var i = 0; i < this.data.length; ++i) {
             this.data[i] += scalar;
         }
         return this;
     },
     
     add : function (matrix) {
-        for (var i = 0; i < this.data.length; ++i)
-        {
+        for (var i = 0; i < this.data.length; ++i) {
             this.data[i] += matrix.data[i];
         }
         return this;
     },
     
     subtract : function (matrix) {
-        for (var i = 0; i < this.data.length; ++i)
-        {
+        for (var i = 0; i < this.data.length; ++i) {
             this.data[i] -= matrix.data[i];
         }
         return this;
@@ -187,33 +182,31 @@ mat4.prototype = {
  * 3x3 Matrix
  */
 function mat3() {
-	this.data = new Float32Array(9);
+    this.data = new Float32Array(9);
     this.columns = 3;
     this.rows = 3;
 }
 
 mat3.identity = function() {
         var m = new mat3();
-		var identityMatrix = new Float32Array(9);
+	var identityMatrix = new Float32Array(9);
     
-        for (var i = 0; i < identityMatrix.length; i++)
-        {
-            if (i==0 || i%4==0)
-            {
+        for (var i = 0; i < identityMatrix.length; i++) {
+            if (i==0 || i%4==0) {
                 identityMatrix[i] = 1.0;
             }
         }
 
         m.data = identityMatrix;
-		return m;
+	return m;
 }
 
-mat3.getDualMatrix = function (vector)
-{
+mat3.getDualMatrix = function (vector) {
     var dualMat = new mat3();
     dualMat.set(0, -vector.z, vector.y,
                vector.z, 0, -vector.x,
-               -vector.y, vector.x, 0);
+               -vector.y, vector.x, 0
+    );
     return dualMat;
 }
 
@@ -221,7 +214,8 @@ mat3.getRotationMatrix = function (theta, vector) {
         var aaT = new mat3();
         aaT.set(vector.x*vector.x, vector.x*vector.y, vector.x*vector.z,
                 vector.x*vector.y, vector.y*vector.y, vector.y*vector.z,
-               vector.x*vector.z, vector.y*vector.z, vector.z*vector.z);
+               vector.x*vector.z, vector.y*vector.z, vector.z*vector.z
+	);
         
         var dualMat = mat3.getDualMatrix(vector);
         
@@ -260,32 +254,28 @@ mat3.prototype = {
     },
     
     multiply : function (scalar) {
-        for (var i = 0; i < this.data.length; ++i)
-        {
+        for (var i = 0; i < this.data.length; ++i) {
             this.data[i] *= scalar;
         }
         return this;
     },
     
     scalarAdd : function (scalar) {
-        for (var i = 0; i < this.data.length; ++i)
-        {
+        for (var i = 0; i < this.data.length; ++i) {
             this.data[i] += scalar;
         }
         return this;
     },
     
     add : function (matrix) {
-        for (var i = 0; i < this.data.length; ++i)
-        {
+        for (var i = 0; i < this.data.length; ++i) {
             this.data[i] += matrix.data[i];
         }
         return this;
     },
     
     subtract : function (matrix) {
-        for (var i = 0; i < this.data.length; ++i)
-        {
+        for (var i = 0; i < this.data.length; ++i) {
             this.data[i] -= matrix.data[i];
         }
         return this;
@@ -310,8 +300,7 @@ mat3.prototype = {
 /*
  * Vectors
  */
-function vec3 ()
-{
+function vec3 () {
     this.x = 0;
     this.y = 0;
     this.z = 0;
@@ -390,10 +379,8 @@ vec3.prototype = {
     }
 }
 
-function vec4 (_vec3)
-{
-    if (_vec3)
-    {
+function vec4 (_vec3) {
+    if (_vec3) {
         this.x = _vec3.x;
         this.y = _vec3.y;
         this.z = _vec3.z;
@@ -418,8 +405,7 @@ vec4.prototype = {
     
     getCartesianVector : function () {
         var vec = new vec3();
-        if (this.w == 0)
-        {
+        if (this.w == 0) {
             vec.x = this.x;
             vec.y = this.y;
             vec.z = this.z;
